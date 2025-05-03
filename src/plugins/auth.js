@@ -3,8 +3,6 @@ import fp from "fastify-plugin";
 async function authPlugin(fastify, options) {
   // Add a hook that runs before each route
   fastify.addHook("preHandler", async (request, reply) => {
-    fastify.log.info("Auth: Starting authentication check");
-
     // Skip authentication in development mode
     if (process.env.NODE_ENV !== "production") {
       fastify.log.info("Auth: Development mode - skipping authentication");
@@ -12,7 +10,6 @@ async function authPlugin(fastify, options) {
     }
 
     const apiKey = request.headers["x-api-key"];
-    fastify.log.info("Auth: Checking API key");
 
     if (!apiKey) {
       fastify.log.warn("Auth: No API key provided");
@@ -23,8 +20,6 @@ async function authPlugin(fastify, options) {
       fastify.log.warn("Auth: Invalid API key provided");
       return reply.code(403).send({ error: "Invalid API key" });
     }
-
-    fastify.log.info("Auth: Authentication successful");
   });
 }
 
