@@ -15,6 +15,9 @@ async function authPlugin(fastify, options) {
 
     await fastify.register(jwt, {
       secret: process.env.JWT_SECRET,
+      sign: {
+        expiresIn: "1h", // Token expires in 1 hour
+      },
     });
   }
 
@@ -69,10 +72,15 @@ async function authPlugin(fastify, options) {
         }
 
         if (body.username === "admin" && body.password === "password") {
-          const token = fastify.jwt.sign({
-            username: body.username,
-            role: "admin",
-          });
+          const token = fastify.jwt.sign(
+            {
+              username: body.username,
+              role: "admin",
+            },
+            {
+              expiresIn: "1h", // Token expires in 1 hour
+            }
+          );
           return { token };
         }
 
