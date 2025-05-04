@@ -29,8 +29,12 @@ async function authPlugin(fastify, options) {
 
   // Add a hook that runs before each route
   fastify.addHook("preHandler", async (request, reply) => {
-    // Skip authentication for login route
-    if (request.url === "/api/login") {
+    // Skip authentication for specific public routes
+    const isPublicRoute =
+      request.url === "/api/login" ||
+      (request.url === "/api/users" && request.method === "POST");
+
+    if (isPublicRoute) {
       return;
     }
 
@@ -62,30 +66,37 @@ async function authPlugin(fastify, options) {
   if (authMode === "jwt") {
     fastify.post("/api/login", async (request, reply) => {
       try {
-        const body = request.body;
+        const { username, password } = request.body;
 
-        if (!body || !body.username || !body.password) {
+        if (!username || !password) {
           return reply.code(400).send({
             error: "Invalid request",
             details: "Username and password are required",
           });
         }
 
-        if (body.username === "admin" && body.password === "password") {
-          const token = fastify.jwt.sign(
-            {
-              username: body.username,
-              role: "admin",
-            },
-            {
-              expiresIn: "1h", // Token expires in 1 hour
-            }
-          );
-          return { token };
+        // Get the usersService from the fastify instance
+        const usersService = fastify.usersService;
+        const user = await usersService.authenticateUser(username, password);
+
+        if (!user) {
+          return reply.code(401).send({ error: "Invalid credentials" });
         }
 
-        return reply.code(401).send({ error: "Invalid credentials" });
+        const token = fastify.jwt.sign(
+          {
+            id: user.id,
+            username: user.username,
+            role: user.role,
+          },
+          {
+            expiresIn: "1h", // Token expires in 1 hour
+          }
+        );
+
+        return { token, user };
       } catch (error) {
+        fastify.log.error(error);
         return reply.code(500).send({ error: "Internal server error" });
       }
     });

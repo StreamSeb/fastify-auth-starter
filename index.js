@@ -12,12 +12,18 @@ const fastify = Fastify({
   logger: true,
 });
 
+// Register plugins
 await fastify.register(dbConnector);
+
+// Register UsersService
+const usersService = new UsersService(fastify.db);
+fastify.decorate("usersService", usersService);
+
+// Register auth plugin
 await fastify.register(authPlugin);
 
-const usersService = new UsersService(fastify.db);
+// Register routes
 const usersController = new UsersController(usersService);
-
 await fastify.register(userRoutes, { usersController });
 
 const start = async () => {
