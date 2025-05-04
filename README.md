@@ -1,6 +1,6 @@
 # 🚀 Fastify Auth Starter
 
-Hey there! 👋 This is my first public repository, and I'm excited to share it with you! This is a lightweight, secure, and flexible authentication API built with Fastify, JWT, and PostgreSQL. Think of it as your friendly neighborhood authentication system that's ready to protect your applications! 🛡️
+Hey there! 👋 This is my first public repository, and I'm excited to share it with you! This is a lightweight, secure, and flexible authentication API built with Fastify, JWT, and PostgreSQL. I wanted to extend my API-building and Node.js skills, and ended up building an Auth-API! 🛡️
 
 ## ✨ Features
 
@@ -239,4 +239,4 @@ This project is licensed under the ISC License. (It's basically the "do whatever
 - [Knex.js](https://knexjs.org/) - For making database stuff less painful
 - [PostgreSQL](https://www.postgresql.org/) - The database that never lets you down
 
-Made with ❤️ and probably too much coffee ☕
+Stay classy Github ☕
