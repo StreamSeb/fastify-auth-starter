@@ -1,12 +1,14 @@
 {
-  "name": "fastify-knex-api",
+  "name": "fastify-auth-starter",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
+    "start:prod": "NODE_ENV=production node index.js",
     "migrate": "knex migrate:latest --env development",
-    "migrate:reset": "knex migrate:rollback --all --env development && knex migrate:latest --env development"
+    "migrate:reset": "knex migrate:rollback --all --env development && knex migrate:latest --env development",
+    "migrate:prod": "knex migrate:latest --env production"
   },
   "keywords": [],
   "author": "",
