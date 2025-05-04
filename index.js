@@ -7,17 +7,17 @@ import UsersController from "./src/controllers/usersController.js";
 import userRoutes from "./src/routes/users.js";
 
 dotenv.config();
-const fastify = Fastify({ logger: true });
 
-// Register plugins
+const fastify = Fastify({
+  logger: true,
+});
+
 await fastify.register(dbConnector);
 await fastify.register(authPlugin);
 
-// Initialize services and controllers
 const usersService = new UsersService(fastify.db);
 const usersController = new UsersController(usersService);
 
-// Register routes
 await fastify.register(userRoutes, { usersController });
 
 const start = async () => {
