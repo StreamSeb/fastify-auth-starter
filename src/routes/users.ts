@@ -1,4 +1,10 @@
-export default async function userRoutes(fastify, options) {
+import { FastifyInstance, FastifyPluginOptions } from "fastify";
+import { UsersController } from "../types/index.js";
+
+export default async function userRoutes(
+  fastify: FastifyInstance,
+  options: FastifyPluginOptions & { usersController: UsersController }
+): Promise<void> {
   const { usersController } = options;
 
   fastify.get("/api/users", usersController.getUsers.bind(usersController));

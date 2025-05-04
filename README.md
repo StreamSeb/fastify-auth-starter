@@ -1,276 +1,187 @@
-# 🚀 Fastify Auth Starter
+# Fastify Auth Starter
 
-Hey there! 👋 This is my first public repository, and I'm excited to share it with you! This is a lightweight, secure, and flexible authentication API built with Fastify, JWT, and PostgreSQL. I wanted to extend my API-building and Node.js skills, and ended up building an Auth-API! 🛡️
+A modern, type-safe Fastify API starter with authentication, database integration, and TypeScript support.
 
-## ✨ Features
+## Features
 
-- 🔐 JWT-based authentication (because who doesn't love secure tokens?)
-- 🔒 Secure password hashing with bcrypt (your passwords are safer than my social life)
-- 📦 PostgreSQL database with Knex.js (for when you need to store things properly)
-- ⚡ Fastify for high performance (it's fast, like really fast)
-- 🛡️ Rate limiting (to keep those pesky bots at bay)
-- 🔄 Flexible authentication modes (JWT, API Key, or None - because options are nice)
-- 🐳 Docker support (containers are cool, right?)
+- 🚀 Fastify 4.x with TypeScript
+- 🔐 JWT Authentication
+- 🗄️ PostgreSQL with Knex.js
+- 📝 TypeScript for type safety
+- 🔄 Hot reloading in development
+- 🛡️ Rate limiting
+- 🏗️ Modular architecture (plugins, services, controllers)
 
-## 🚀 Quick Start
+## Prerequisites
 
-### Prerequisites
+- Node.js 18 or higher
+- PostgreSQL 12 or higher
+- pnpm (recommended) or npm
 
-- Node.js (v16 or higher) - because we're not living in the past
-- PostgreSQL - the database that never lets you down
-- pnpm (recommended) or npm - your package manager of choice
-- Docker (optional) - if you want to run PostgreSQL in a container
+## Getting Started
 
-### Installation
-
-1. Clone the repository (because copying is caring):
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/yourusername/fastify-auth-starter.git
 cd fastify-auth-starter
 ```
 
-2. Install dependencies (this is where the magic begins):
+2. Install dependencies:
 
 ```bash
 pnpm install
 ```
 
-3. Set up your environment variables (the secret sauce):
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your configuration (don't worry, we've got defaults):
+3. Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Database Configuration
-# Option 1: Use DATABASE_URL (recommended for production)
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/fastify_api
-
-# Option 2: Use individual DB variables (recommended for development)
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=fastify_api
 
-# Server Configuration
-PORT=3001
-NODE_ENV=production
-
-# Authentication Configuration
-# Options: none, api-key, jwt
-# none: No authentication required (living dangerously)
-# api-key: Use x-api-key header for authentication (the classic)
-# jwt: Use JWT tokens for authentication (the modern way)
-AUTH_MODE=jwt
-
-# JWT Configuration (required if AUTH_MODE=jwt)
-# Generate a strong secret for production
+# JWT Configuration
 JWT_SECRET=your-secret-key
 
-# API Key Configuration (required if AUTH_MODE=api-key)
-# Generate a strong API key for production
-API_KEY=your-api-key-here
+# Server Configuration
+PORT=3001
+
+# Authentication Mode (jwt, api-key, or none)
+AUTH_MODE=jwt
 ```
 
-4. Set up the database (choose your preferred method):
-
-#### Option A: Using Docker (Recommended for Development)
-
-If you have Docker installed, this is the easiest way to get started:
+4. Start the database:
 
 ```bash
-# Start PostgreSQL in a Docker container
 docker-compose up -d
 ```
 
-The container will be configured with these default settings:
-
-- Username: postgres
-- Password: postgres
-- Database name: fastify_api
-- Port: 5432
-
-You can customize these settings by updating your `.env` file before running docker-compose:
-
-```env
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_NAME=your_database_name
-```
-
-To stop the database:
-
-```bash
-docker-compose down
-```
-
-To stop and remove all data (the nuclear option):
-
-```bash
-docker-compose down -v
-```
-
-#### Option B: Using Local PostgreSQL
-
-If you prefer to use your own PostgreSQL installation:
-
-1. Create a new database:
-
-```sql
-CREATE DATABASE fastify_api;
-```
-
-2. Make sure your PostgreSQL server is running
-
-3. Update your `.env` file with your PostgreSQL credentials:
-
-```env
-# If using DATABASE_URL
-DATABASE_URL=postgres://your_username:your_password@localhost:5432/fastify_api
-
-# Or if using individual variables
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_NAME=fastify_api
-```
-
-5. Run migrations (let's get that database structure ready):
+5. Run migrations:
 
 ```bash
 pnpm migrate
 ```
 
-6. Start the server (the moment we've all been waiting for):
+6. Start the development server:
 
 ```bash
 pnpm dev
 ```
 
-## 📚 API Endpoints
+The server will be running at `http://localhost:3001` with hot reloading enabled.
 
-### Public Endpoints (no secret handshake required)
-
-#### Register a new user
-
-```http
-POST /api/users
-Content-Type: application/json
-
-{
-  "username": "newuser",
-  "email": "user@example.com",
-  "password": "securepassword123",
-  "role": "user"
-}
-```
-
-#### Login (where the magic happens)
-
-```http
-POST /api/login
-Content-Type: application/json
-
-{
-  "username": "newuser",
-  "password": "securepassword123"
-}
-```
-
-### Protected Endpoints (bring your JWT token)
-
-#### Get all users
-
-```http
-GET /api/users
-Authorization: Bearer <your-jwt-token>
-```
-
-#### Update user
-
-```http
-PUT /api/users/:id
-Authorization: Bearer <your-jwt-token>
-Content-Type: application/json
-
-{
-  "username": "updateduser",
-  "email": "updated@example.com"
-}
-```
-
-#### Delete user
-
-```http
-DELETE /api/users/:id
-Authorization: Bearer <your-jwt-token>
-```
-
-## 🔧 Configuration
-
-### Authentication Modes (pick your poison)
-
-The API supports three authentication modes, configurable via `AUTH_MODE` in `.env`:
-
-- `jwt`: JWT-based authentication (default)
-  - Requires `JWT_SECRET` to be set
-  - Uses Bearer token authentication
-- `api-key`: API key authentication
-  - Requires `API_KEY` to be set
-  - Uses x-api-key header
-- `none`: No authentication (for when you're feeling adventurous)
-
-### Rate Limiting
-
-Default rate limit is 100 requests per minute. Adjust in `src/plugins/auth.js` if needed (because sometimes you need to let loose).
-
-## 🛠️ Development
-
-### Available Scripts (your new best friends)
-
-- `pnpm dev`: Start development server (with hot reload, because we're not savages)
-- `pnpm start`: Start server in default mode (for when you're feeling basic)
-- `pnpm migrate`: Run database migrations (keeping things organized)
-- `pnpm migrate:reset`: Reset and run all migrations (when you need a fresh start)
-
-### Project Structure (where the magic lives)
+## Project Structure
 
 ```
 ├── src/
-│   ├── controllers/    # Request handlers (the traffic controllers)
-│   ├── services/       # Business logic (where the real work happens)
-│   ├── routes/         # Route definitions (the road map)
-│   └── plugins/        # Fastify plugins (the cool add-ons)
-├── migrations/         # Database migrations (the database's diary)
-├── seeds/             # Database seeds (planting the data)
-└── knexfile.js        # Knex configuration (the database's instruction manual)
+│   ├── config/         # Configuration files
+│   ├── controllers/    # Request handlers
+│   ├── plugins/        # Fastify plugins
+│   ├── routes/         # API routes
+│   ├── services/       # Business logic
+│   ├── types/          # TypeScript type definitions
+│   └── index.ts        # Application entry point
+├── migrations/         # Database migrations
+├── seeds/             # Database seed files
+├── dist/              # Compiled JavaScript (ignored in git)
+└── docker-compose.yml # Docker configuration
 ```
 
-## 🔒 Security Features
+## Available Scripts
 
-- Password hashing with bcrypt (because plain text is so 1990s)
-- JWT token expiration (1 hour, because nothing lasts forever)
-- Rate limiting (to keep the bad guys at bay)
-- Input validation (because we don't trust anyone)
-- Secure password storage (your secrets are safe with us)
+- `pnpm dev` - Start development server with hot reloading
+- `pnpm build` - Build TypeScript files
+- `pnpm start` - Start production server
+- `pnpm start:prod` - Start production server with production environment
+- `pnpm migrate` - Run database migrations
+- `pnpm migrate:reset` - Reset and rerun all migrations
+- `pnpm migrate:prod` - Run migrations in production environment
 
-## 🤝 Contributing
+## API Endpoints
 
-Found a bug? Want to add a feature? Feel free to submit a Pull Request! This is my first public repository, so be gentle (but thorough) with your feedback! 😊
+### Authentication
 
-## 📝 License
+- `POST /api/login` - Login and get JWT token
+  ```json
+  {
+    "username": "your_username",
+    "password": "your_password"
+  }
+  ```
 
-This project is licensed under the ISC License. (It's basically the "do whatever you want, just don't blame me" license)
+### Users
 
-## 🙏 Acknowledgments
+- `GET /api/users` - Get all users (requires authentication)
+- `POST /api/users` - Create a new user
+  ```json
+  {
+    "username": "new_user",
+    "email": "user@example.com",
+    "password": "password123",
+    "role": "user"
+  }
+  ```
+- `PUT /api/users/:id` - Update a user (requires authentication)
+- `DELETE /api/users/:id` - Delete a user (requires authentication)
 
-- [Fastify](https://www.fastify.io/) - For being fast and awesome
-- [Knex.js](https://knexjs.org/) - For making database stuff less painful
-- [PostgreSQL](https://www.postgresql.org/) - The database that never lets you down
+## Authentication Modes
 
-Stay classy Github ☕
+The API supports three authentication modes, configured via the `AUTH_MODE` environment variable:
+
+1. `jwt` (default) - JWT-based authentication
+2. `api-key` - API key authentication (requires `API_KEY` in .env)
+3. `none` - No authentication (not recommended for production)
+
+## Development
+
+### TypeScript
+
+This project uses TypeScript for type safety. The source code is in the `src` directory, and the compiled JavaScript is output to the `dist` directory.
+
+Key TypeScript features:
+
+- Strict type checking
+- Interface definitions for all data structures
+- Type-safe database queries
+- Type-safe request/response handling
+
+### Database Migrations
+
+Migrations are written in JavaScript with JSDoc type annotations for IDE support. To create a new migration:
+
+```bash
+pnpm knex migrate:make migration_name
+```
+
+### Database Seeds
+
+Seed files are also in JavaScript with JSDoc type annotations. To create a new seed:
+
+```bash
+pnpm knex seed:make seed_name
+```
+
+## Production Deployment
+
+For production deployment:
+
+1. Set `NODE_ENV=production`
+2. Set `DATABASE_URL` with your production database connection string
+3. Build the TypeScript files:
+
+```bash
+pnpm build
+```
+
+4. Start the production server:
+
+```bash
+pnpm start:prod
+```
+
+## License
+
+MIT

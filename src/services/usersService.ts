@@ -1,12 +1,24 @@
 import bcrypt from "bcrypt";
+import { Knex } from "knex";
+import {
+  User,
+  UserWithoutPassword,
+  CreateUserDTO,
+  UpdateUserDTO,
+  UsersService,
+} from "../types/index.js";
 
-export default class UsersService {
-  constructor(db) {
+const saltRounds = 10;
+
+export default class UsersServiceImpl implements UsersService {
+  private db: Knex;
+
+  constructor(db: Knex) {
     this.db = db;
   }
 
-  async getAllUsers() {
-    return await this.db("users").select(
+  async getAllUsers(): Promise<UserWithoutPassword[]> {
+    const users = await this.db("users").select(
       "id",
       "username",
       "email",
@@ -14,13 +26,13 @@ export default class UsersService {
       "created_at",
       "updated_at"
     );
+    return users;
   }
 
-  async createUser(userData) {
+  async createUser(userData: CreateUserDTO): Promise<UserWithoutPassword> {
     const { username, email, password, role = "user" } = userData;
 
     // Hash the password
-    const saltRounds = 10;
     const password_hash = await bcrypt.hash(password, saltRounds);
 
     const [user] = await this.db("users")
@@ -29,6 +41,8 @@ export default class UsersService {
         email,
         password_hash,
         role,
+        created_at: new Date(),
+        updated_at: new Date(),
       })
       .returning([
         "id",
@@ -42,15 +56,21 @@ export default class UsersService {
     return user;
   }
 
-  async updateUser(id, userData) {
+  async updateUser(
+    id: number,
+    userData: UpdateUserDTO
+  ): Promise<UserWithoutPassword> {
     const { username, email, password, role } = userData;
-    const updateData = { ...userData, updated_at: new Date() };
+    const updateData: Partial<User> = {
+      ...(username && { username }),
+      ...(email && { email }),
+      ...(role && { role }),
+      updated_at: new Date(),
+    };
 
     // If password is provided, hash it
     if (password) {
-      const saltRounds = 10;
       updateData.password_hash = await bcrypt.hash(password, saltRounds);
-      delete updateData.password;
     }
 
     const [user] = await this.db("users")
@@ -68,11 +88,14 @@ export default class UsersService {
     return user;
   }
 
-  async deleteUser(id) {
+  async deleteUser(id: number): Promise<number> {
     return await this.db("users").where({ id }).del();
   }
 
-  async authenticateUser(username, password) {
+  async authenticateUser(
+    username: string,
+    password: string
+  ): Promise<UserWithoutPassword | null> {
     const user = await this.db("users").where({ username }).first();
 
     if (!user) {
@@ -89,7 +112,9 @@ export default class UsersService {
     return userWithoutPassword;
   }
 
-  async getUserByUsername(username) {
+  async getUserByUsername(
+    username: string
+  ): Promise<UserWithoutPassword | null> {
     const user = await this.db("users").where({ username }).first();
 
     if (!user) {
