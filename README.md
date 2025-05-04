@@ -19,6 +19,7 @@ Hey there! 👋 This is my first public repository, and I'm excited to share it 
 - Node.js (v16 or higher) - because we're not living in the past
 - PostgreSQL - the database that never lets you down
 - pnpm (recommended) or npm - your package manager of choice
+- Docker (optional) - if you want to run PostgreSQL in a container
 
 ### Installation
 
@@ -75,18 +76,25 @@ JWT_SECRET=your-secret-key
 API_KEY=your-api-key-here
 ```
 
-4. Start the database (Docker to the rescue):
+4. Set up the database (choose your preferred method):
+
+#### Option A: Using Docker (Recommended for Development)
+
+If you have Docker installed, this is the easiest way to get started:
 
 ```bash
-# This will start a PostgreSQL database with these default settings:
-# - Username: postgres
-# - Password: postgres
-# - Database name: fastify_api
-# - Port: 5432
+# Start PostgreSQL in a Docker container
 docker-compose up -d
 ```
 
-You can customize the database settings by setting these variables in your `.env` file:
+The container will be configured with these default settings:
+
+- Username: postgres
+- Password: postgres
+- Database name: fastify_api
+- Port: 5432
+
+You can customize these settings by updating your `.env` file before running docker-compose:
 
 ```env
 DB_USER=your_username
@@ -94,7 +102,7 @@ DB_PASSWORD=your_password
 DB_NAME=your_database_name
 ```
 
-To stop the database (when you need a break):
+To stop the database:
 
 ```bash
 docker-compose down
@@ -104,6 +112,32 @@ To stop and remove all data (the nuclear option):
 
 ```bash
 docker-compose down -v
+```
+
+#### Option B: Using Local PostgreSQL
+
+If you prefer to use your own PostgreSQL installation:
+
+1. Create a new database:
+
+```sql
+CREATE DATABASE fastify_api;
+```
+
+2. Make sure your PostgreSQL server is running
+
+3. Update your `.env` file with your PostgreSQL credentials:
+
+```env
+# If using DATABASE_URL
+DATABASE_URL=postgres://your_username:your_password@localhost:5432/fastify_api
+
+# Or if using individual variables
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_NAME=fastify_api
 ```
 
 5. Run migrations (let's get that database structure ready):
