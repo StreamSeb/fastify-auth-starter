@@ -1,6 +1,6 @@
 # Fastify Auth Starter
 
-A modern, type-safe Fastify API starter with authentication, database integration, and TypeScript support.
+A modern, type-safe Fastify API starter with authentication, database integration, and TypeScript support. This was suppose to be me testing out how to build with node and fastify, and ended up becoming a Auth API!
 
 ## Features
 
