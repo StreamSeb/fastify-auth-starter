@@ -1,0 +1,9 @@
+# These owners will be the default owners for everything in the repo
+* @Streamseb
+
+# These owners will be responsible for all TypeScript files
+*.ts @Streamseb
+
+# These owners will be responsible for all configuration files
+*.json @Streamseb
+*.env* @Streamseb 

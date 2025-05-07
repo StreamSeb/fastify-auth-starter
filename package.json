@@ -1,6 +1,8 @@
 {
   "name": "fastify-auth-starter",
-  "version": "1.0.0",
+  "author": "Sebastian Nilsson",
+  "version": "0.1.0",
+  "description": "A modern, type-safe Fastify API starter with authentication and database integration",
   "type": "module",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -12,7 +14,6 @@
     "migrate:prod": "knex migrate:latest --env production"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "@fastify/jwt": "^9.1.0",
